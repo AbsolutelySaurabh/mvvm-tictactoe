@@ -1,0 +1,81 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.example.mvvm_sample_app"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+    buildToolsVersion = '28.0.3'
+}
+
+ext {
+
+    // Versions
+    supportVersion = '28.0.0'
+    supportAnnotationsVersion = '28.0.0'
+    architectureComponentVersion = '1.1.1'
+    junitVersion = '4.12'
+    baristaVersion = '2.9.0'
+
+    // Packages
+    supportPackage = 'com.android.support'
+    architecturePackage = 'android.arch.lifecycle'
+    junitPackage = 'junit'
+    baristaPackage = 'com.schibsted.spain'
+    architectureCorePackage = 'android.arch.core'
+
+    // Dependencies
+    supportDependencies = [
+            appCompat  : buildDependency(supportPackage, 'appcompat-v7', supportVersion),
+            design     : buildDependency(supportPackage, 'design', supportVersion),
+            annotations: buildDependency(supportPackage, 'support-annotations', supportAnnotationsVersion)
+    ]
+
+    architectureComponentDependencies = [
+            viewModelAndLiveData: buildDependency(architecturePackage, 'extensions', architectureComponentVersion)
+    ]
+
+    testingDependencies = [
+            junit             : buildDependency(junitPackage, 'junit', junitVersion),
+            barista           : buildDependency(baristaPackage, 'barista', baristaVersion),
+            liveDataTestHelper: buildDependency(architectureCorePackage, 'core-testing', architectureComponentVersion)
+    ]
+}
+
+
+static String buildDependency(String pack, String dependency, String version) {
+    return "${pack}:${dependency}:${version}"
+}
+
+dependencies {
+
+    implementation supportDependencies.appCompat
+    implementation supportDependencies.design
+    implementation supportDependencies.annotations
+    implementation architectureComponentDependencies.viewModelAndLiveData
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    testImplementation testingDependencies.junit
+    testImplementation testingDependencies.liveDataTestHelper
+    androidTestImplementation(testingDependencies.barista) {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+}
